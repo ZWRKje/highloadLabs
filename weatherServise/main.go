@@ -22,10 +22,11 @@ type wetherResp struct {
 
 func main() {
 	port := os.Getenv("LISTEN_PORT")
+	apiKey := os.Getenv("APIKEY")
 	http.HandleFunc("/v1/current/", func(w http.ResponseWriter, req *http.Request) {
 		city := req.URL.Query().Get("city")
 		url := os.Getenv("URL")
-		url = fmt.Sprintf("%sweather?q=%s&appid=4a79f62e388436d841b3ffc1992e6b6d&units=metric", url, city)
+		url = fmt.Sprintf("%sweather?q=%s&appid=%s&units=metric", url, city, apiKey)
 		data, err := current(url)
 		resp := wetherResp{data.Name, "celsius", data.Main.Temp}
 		if err != nil {
