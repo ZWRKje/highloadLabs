@@ -35,6 +35,9 @@ type wetherResp struct {
 func main() {
 	port := os.Getenv("LISTEN_PORT")
 	apiKey := os.Getenv("APIKEY")
+	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "Hello World")
+	})
 	http.HandleFunc("/v1/current/", func(w http.ResponseWriter, req *http.Request) {
 		city := req.URL.Query().Get("city")
 		url := os.Getenv("URL")
@@ -52,7 +55,6 @@ func main() {
 		}
 		json.NewEncoder(w).Encode(resp)
 	})
-
 	http.HandleFunc("/v1/forecast/", func(w http.ResponseWriter, req *http.Request) {
 		city := req.URL.Query().Get("city")
 		dt := req.URL.Query().Get("dt")
@@ -78,8 +80,12 @@ func main() {
 	})
 
 	fmt.Printf("%s \n", port)
-	fmt.Println("Server is listening...")
-	http.ListenAndServe("localhost:"+port, nil)
+	fmt.Println("Server is listening at localhost:" + port)
+	err := http.ListenAndServe("localhost:"+port, nil)
+	if err != nil {
+		fmt.Printf("Server is dead %s", err)
+		return
+	}
 }
 
 func current(url string) (weatherData, error) {
