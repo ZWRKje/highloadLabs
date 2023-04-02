@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service Auth {
+    rpc IsAuth (UserInfo) returns (AuthResp);
+}
+
+message UserInfo {
+    string login = 1;
+}
+
+message AuthResp {
+    bool reply = 1;
+}
