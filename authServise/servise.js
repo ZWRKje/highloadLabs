@@ -2,7 +2,7 @@ const grpc = require('@grpc/grpc-js');
 const PROTO_PATH = './auth.proto';
 var protoLoader = require('@grpc/proto-loader');
 
-const IP = '0.0.0.0';
+const IP = '127.0.0.1';
 const PORT = '50051';
 
 const options = {

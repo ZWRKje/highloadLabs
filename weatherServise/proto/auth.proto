@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package = "weather/proto";
+
+service Auth {
+    rpc IsAuth (UserInfo) returns (AuthResp);
+}
+
+message UserInfo {
+    string login = 1;
+}
+
+message AuthResp {
+    bool reply = 1;
+}
