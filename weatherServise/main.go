@@ -50,7 +50,7 @@ func main() {
 	http.HandleFunc("/v1/forecast/", forecastWeather)
 	fmt.Printf("%s \n", port)
 	fmt.Println("Server is listening at localhost:" + port)
-	err := http.ListenAndServe("127.0.0.1:"+port, nil)
+	err := http.ListenAndServe("0.0.0.0:"+port, nil)
 	if err != nil {
 		fmt.Printf("Server is dead %s", err)
 		return
@@ -89,7 +89,7 @@ func forecast(url string, ts int64) (forecastWeatherData, error) {
 }
 
 func helloServer(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Hello World")
+	fmt.Fprintf(w, "Hello World from %s", port)
 }
 
 func currentWeather(w http.ResponseWriter, req *http.Request) {
@@ -152,7 +152,7 @@ func checkAuth(ctx context.Context, req *http.Request) bool {
 		log.Fatal(err)
 	}
 	fmt.Print(decodedName)
-	conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
