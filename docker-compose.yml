@@ -1,0 +1,33 @@
+version: '3'
+services:
+    weather1:
+        build: weatherServise/
+        environment:
+            - LISTEN_PORT=8181
+        command: go run ./main.go
+        ports:
+            - 8181:8181
+    weather2:
+        build: weatherServise/
+        environment:
+            - LISTEN_PORT=8182
+        command: go run ./main.go
+        ports:
+            - 8182:8182
+    auth:
+        build: authServise/
+        command: node ./servise.js
+        ports:
+            - 50051:50051
+        depends_on:
+            - weather1
+            - weather2
+    balancer:
+        build: loaderBalancer/
+        ports:
+            - 8080:8080
+        depends_on:
+            - auth
+            - weather1
+            - weather2            
+
