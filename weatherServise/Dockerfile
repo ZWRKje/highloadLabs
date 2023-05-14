@@ -5,6 +5,7 @@ ENV  APIKEY="4a79f62e388436d841b3ffc1992e6b6d"
 
 WORKDIR /app 
 
+COPY ./handler ./handler
 COPY ./proto ./proto
 COPY go.* ./
 RUN go mod download
