@@ -1,9 +1,11 @@
 version: '3'
 services:
     redis:
-        build: redis/
+        image: redis:latest
         ports:
             - 6379:6379
+        networks:
+            - mynetwork
     weather1:
         build: weatherServise/
         environment:
@@ -11,13 +13,15 @@ services:
         command: go run ./main.go
         ports:
             - 8181:8181
-    weather2:
-        build: weatherServise/
-        environment:
-            - LISTEN_PORT=8182
-        command: go run ./main.go
-        ports:
-            - 8182:8182
+        networks:
+            - mynetwork
+    # weather2:
+    #     build: weatherServise/
+    #     environment:
+    #         - LISTEN_PORT=8182
+    #     command: go run ./main.go
+    #     ports:
+    #         - 8182:8182
     auth:
         build: authServise/
         command: node ./servise.js
@@ -25,13 +29,32 @@ services:
             - 50051:50051
         depends_on:
             - weather1
-            - weather2
+            # - weather2
+        networks:
+            - mynetwork
     balancer:
         build: loaderBalancer/
         ports:
-            - 8080:8080
+            - 8080:8080         
         depends_on:
             - auth
             - weather1
-            - weather2            
-
+            # - weather2
+        networks:
+            - mynetwork               
+    prometheus:
+        image: prom/prometheus
+        volumes:
+            - ./prometheus/:/etc/prometheus/
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+            - '--web.console.templates=/usr/share/prometheus/consoles'
+        ports:
+          - 9090:9090
+        networks:
+            - mynetwork             
+            
+networks:
+  mynetwork:
